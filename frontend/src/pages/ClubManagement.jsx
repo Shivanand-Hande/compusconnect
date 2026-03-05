@@ -138,11 +138,17 @@ const ClubManagement = () => {
                         {club?.name[0]}
                     </div>
                     <div>
-                        <h1 className="text-3xl font-black dark:text-white uppercase tracking-tighter">{club?.name}</h1>
+                        <h1 className="text-3xl font-black dark:text-white uppercase tracking-tighter">{club?.name || 'Loading...'}</h1>
                         <p className="text-gray-500 font-medium">{club?.category} • Official Management Console</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="p-3 bg-white dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-800 rounded-2xl text-gray-400 hover:text-primary-600 transition-all font-bold text-xs"
+                    >
+                        REFRESH STATE
+                    </button>
                     <button
                         onClick={() => setShowEventModal(true)}
                         className="bg-primary-600 text-white px-6 py-3 rounded-2xl font-black shadow-xl shadow-primary-600/20 hover:bg-primary-700 transition-all flex items-center gap-2 group text-sm"

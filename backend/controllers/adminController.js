@@ -43,7 +43,7 @@ const getStats = async (req, res) => {
 // @access  Private (Super Admin)
 const getRecentActivity = async (req, res) => {
     const recentClubs = await Club.findAll({
-        limit: 5,
+        limit: 50,
         order: [['createdAt', 'DESC']],
         include: [{ model: User, as: 'admin', attributes: ['name'] }]
     });

@@ -46,7 +46,7 @@ const AdminPanel = () => {
     const handleReject = async (id) => {
         if (!window.confirm('Are you sure you want to reject this club?')) return;
         try {
-            await axios.delete(`http://localhost:5000/api/admin/reject/${id}`);
+            await axios.delete(`${API_URL}/api/admin/reject/${id}`);
             setPendingClubs(prev => prev.filter(c => c.id !== id));
             alert('Club rejected');
         } catch (err) {
@@ -100,7 +100,7 @@ const AdminPanel = () => {
                                     </div>
                                     <div>
                                         <h3 className="text-lg font-bold dark:text-white">{club.name}</h3>
-                                        <p className="text-sm text-gray-500">Applied by <span className="text-primary-600 font-medium">{club.admin?.name}</span> • {club.category}</p>
+                                        <p className="text-sm text-gray-500">Applied by <span className="text-primary-600 font-medium">{club.admin?.name || 'Unknown'}</span> • {club.category}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3">
