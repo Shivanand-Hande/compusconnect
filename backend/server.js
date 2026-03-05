@@ -21,8 +21,8 @@ require('./models'); // Ensure associations are loaded
 connectDB();
 
 // Sync Database
-sequelize.sync().then(() => {
-    console.log('Database synced...');
+sequelize.sync({ alter: true }).then(() => {
+    console.log('Database synced with schema changes...');
 });
 
 const path = require('path');
