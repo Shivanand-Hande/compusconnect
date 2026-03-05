@@ -54,7 +54,7 @@ if (process.env.NODE_ENV === 'production') {
     const frontendPath = path.join(__dirname, '../frontend/dist');
     app.use(express.static(frontendPath));
     // Catch-all for React Router in the frontend
-    app.get('/*', (req, res) => {
+    app.get('*any', (req, res) => {
         if (!req.path.startsWith('/api')) {
             res.sendFile(path.join(frontendPath, 'index.html'));
         }
