@@ -20,12 +20,10 @@ const { sequelize, connectDB } = require('./config/db');
 require('./models'); // Ensure associations are loaded
 connectDB();
 
-// Sync Database (development only)
-if (process.env.NODE_ENV === 'development') {
-    sequelize.sync().then(() => {
-        console.log('Database synced...');
-    });
-}
+// Sync Database
+sequelize.sync().then(() => {
+    console.log('Database synced...');
+});
 
 const path = require('path');
 
