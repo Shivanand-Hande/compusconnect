@@ -7,6 +7,10 @@ const Notification = sequelize.define('Notification', {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true
     },
+    recipientId: {
+        type: DataTypes.UUID,
+        allowNull: false
+    },
     title: {
         type: DataTypes.STRING,
         allowNull: false
@@ -14,6 +18,10 @@ const Notification = sequelize.define('Notification', {
     message: {
         type: DataTypes.TEXT,
         allowNull: false
+    },
+    type: {
+        type: DataTypes.STRING,
+        defaultValue: 'System'
     },
     isRead: {
         type: DataTypes.BOOLEAN,
