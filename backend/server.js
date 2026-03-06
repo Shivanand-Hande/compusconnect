@@ -46,6 +46,28 @@ app.use('/api/attendance', require('./routes/attendanceRoutes'));
 app.use('/api/announcements', require('./routes/announcementRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
+app.get('/api/setup-admin', async (req, res) => {
+    try {
+        const { User } = require('./models');
+        const email = 'admin@campusconnect.com';
+        const password = 'adminpassword123';
+        const existingUser = await User.findOne({ where: { email } });
+        if (existingUser) {
+            existingUser.role = 'Super Admin';
+            await existingUser.save();
+            return res.send('Super Admin updated successfully!');
+        }
+        await User.create({
+            name: 'System Admin',
+            email: email,
+            password: password,
+            role: 'Super Admin'
+        });
+        res.send('Super Admin created successfully! Email: admin@campusconnect.com, Password: adminpassword123');
+    } catch (err) {
+        res.status(500).send('Error: ' + err.message);
+    }
+});
 
 // Serve Frontend (Vite Build) in Production
 if (process.env.NODE_ENV === 'production') {
