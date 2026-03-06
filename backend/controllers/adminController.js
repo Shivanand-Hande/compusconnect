@@ -6,36 +6,51 @@ const { Op } = require('sequelize');
 // @route   GET /api/admin/stats
 // @access  Private (Super Admin)
 const getStats = async (req, res) => {
-    const totalStudents = await User.count({ where: { role: 'Student' } });
-    const totalClubs = await Club.count();
-    const approvedClubs = await Club.count({ where: { isApproved: true } });
-    const totalEvents = await Event.count();
+    try {
+        const totalStudents = await User.count({ where: { role: 'Student' } });
+        const totalClubs = await Club.count();
+        const approvedClubs = await Club.count({ where: { isApproved: true } });
+        const totalEvents = await Event.count();
 
-    // Get participation growth (last 6 months)
-    const participationData = await Attendance.findAll({
-        attributes: [
-            [sequelize.fn('strftime', '%m', sequelize.col('createdAt')), 'month'],
-            [sequelize.fn('COUNT', sequelize.col('id')), 'count']
-        ],
-        group: ['month'],
-        order: [['month', 'ASC']]
-    });
+        // Get participation growth (last 6 months)
+        let participationData = [];
+        try {
+            const isMySQL = sequelize.getDialect() === 'mysql';
+            const dateFn = isMySQL
+                ? [sequelize.fn('MONTH', sequelize.col('createdAt')), 'month']
+                : [sequelize.fn('strftime', '%m', sequelize.col('createdAt')), 'month'];
 
-    // Fetch upcoming events
-    const upcomingEvents = await Event.findAll({
-        where: { date: { [Op.gte]: new Date() } },
-        limit: 3,
-        order: [['date', 'ASC']]
-    });
+            participationData = await Attendance.findAll({
+                attributes: [
+                    dateFn,
+                    [sequelize.fn('COUNT', sequelize.col('id')), 'count']
+                ],
+                group: ['month'],
+                order: [['month', 'ASC']]
+            });
+        } catch (chartErr) {
+            console.error('Chart Data Error:', chartErr.message);
+        }
 
-    res.json({
-        totalStudents,
-        totalClubs,
-        approvedClubs,
-        totalEvents,
-        participationData,
-        upcomingEvents
-    });
+        // Fetch upcoming events
+        const upcomingEvents = await Event.findAll({
+            where: { date: { [Op.gte]: new Date() } },
+            limit: 3,
+            order: [['date', 'ASC']]
+        });
+
+        res.json({
+            totalStudents,
+            totalClubs,
+            approvedClubs,
+            totalEvents,
+            participationData,
+            upcomingEvents
+        });
+    } catch (err) {
+        console.error('Stats Error:', err);
+        res.status(500).json({ message: 'Error fetching stats' });
+    }
 };
 
 // @desc    Get all activities (recent)
